@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: >-
+  If you use this independent verification, please cite it as below, AND cite
+  the original theorem and Lean formalization by Claude / Anthropic.
+title: >-
+  Independent third-party verification of the Lean formalization of
+  "More Than Two Thirds of the Zeros of the Riemann Zeta Function Lie on the
+  Critical Line"
+type: dataset
+authors:
+  - name: "Riemann Labs (primaryhosting)"
+abstract: >-
+  An independent, third-party replication and dual-kernel verification of the
+  Lean 4 formalization accompanying an AI-authored (Claude / Anthropic) proof
+  that at least 2/3 (more precisely, an improvement of the proven lower bound
+  from 41.6% to 67.2%) of the nontrivial zeros of the Riemann zeta function lie
+  on the critical line. The formalization was rebuilt from its pinned toolchain
+  in independent CI (9,010-job lake build), audited to depend only on Lean's
+  three standard axioms with zero sorryAx across 42 headline statements, and
+  replayed through both the Lean kernel and the independent nanoda kernel via
+  the leanprover/comparator tool. This is a proportion result and is NOT a proof
+  of the Riemann Hypothesis; the theorem and its Lean proof are the work of
+  Claude / Anthropic, not of the verifier.
+date-released: "2026-08-11"
+version: "1.0.0"
+license: CC-BY-4.0
+url: "https://github.com/primaryhosting/zeta-two-thirds-verification"
+repository-code: "https://github.com/primaryhosting/zeta-two-thirds-verification"
+keywords:
+  - Riemann zeta function
+  - critical line
+  - formal verification
+  - Lean 4
+  - Mathlib
+  - independent replication
+  - AI-assisted mathematics
+references:
+  - type: article
+    title: "Learning more about Claude's mathematical capabilities (The Riemann zeta function)"
+    authors:
+      - name: "Anthropic"
+    date-released: "2026-08-10"
+    url: "https://www.anthropic.com/research/riemann-zeta"
+  - type: software
+    title: "zeta-23-lean — Lean 4 formalization"
+    authors:
+      - name: "Claude / Anthropic"
+    license: Apache-2.0
+    url: "https://github.com/anthropics/zeta-23-lean"

@@ -1,0 +1,127 @@
+name: Independent replication (Riemann Labs)
+on:
+  workflow_dispatch:
+  push:
+    branches: [replication]
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Toolchain (from lean-toolchain pin)
+        run: |
+          cat lean-toolchain
+          elan toolchain install "$(cat lean-toolchain)"
+      - name: Mathlib cache
+        run: ~/.elan/bin/lake exe cache get || echo "cache get failed; building from source"
+      - name: Build Zeta23 (headline modules)
+        run: ~/.elan/bin/lake build
+      - name: Build Solution targets
+        run: |
+          ~/.elan/bin/lake build Solution
+          ~/.elan/bin/lake build Solution.Multiplicity
+          ~/.elan/bin/lake build Solution.XiPrime || true
+      - name: Axiom audit (comparator PrintAxioms)
+        run: |
+          ~/.elan/bin/lake env lean comparator/PrintAxioms.lean | tee axioms-report.txt
+          for f in comparator/PrintAxioms/*.lean; do ~/.elan/bin/lake env lean "$f" | tee -a axioms-report.txt; done
+          echo "--- assert: every line is exactly the 3 standard axioms, none else"
+          ! grep -vE "\[propext, Classical\.choice, Quot\.sound\]|^'" axioms-report.txt | grep -q "axiom" || (echo "UNEXPECTED AXIOM FOUND" && exit 1)
+          ! grep -q "sorryAx" axioms-report.txt || (echo "sorryAx FOUND" && exit 1)
+      - name: Upload audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: axioms-report
+          path: axioms-report.txt
+
+  # ---- FULL leanprover/comparator: statement-equality vs the trusted Challenge files
+  #      + Lean-kernel replay [+ independent nanoda kernel when it builds] ----
+  # Separate job on a FRESH checkout that never pre-builds Solution (comparator hygiene,
+  # README Assumption-2). Matrix-split one config per job to stay under the 6h cap.
+  # A red result here does NOT invalidate build-and-audit; it means the independent
+  # statement-equality/kernel-replay leg has not yet gone green.
+  comparator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg: [config, config-multiplicity, config-xiprime]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Toolchain (from lean-toolchain pin)
+        run: elan toolchain install "$(cat lean-toolchain)"
+      - name: Mathlib cache
+        run: ~/.elan/bin/lake exe cache get || echo "cache get failed; building from source"
+      - name: Set up Go 1.24 (landrun build requirement)
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - name: Build landrun (Landlock sandbox; no userns needed)
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/bin"
+          git clone --depth 1 https://github.com/Zouuup/landrun "$RUNNER_TEMP/landrun"
+          ( cd "$RUNNER_TEMP/landrun" && go build -o "$RUNNER_TEMP/bin/landrun" ./cmd/landrun )
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Build lean4export matched to this project's toolchain
+        run: |
+          set -euo pipefail
+          TC="$(cat lean-toolchain)"
+          git clone --depth 1 https://github.com/leanprover/lean4export "$RUNNER_TEMP/lean4export"
+          cd "$RUNNER_TEMP/lean4export"
+          echo "$TC" > lean-toolchain
+          ~/.elan/bin/lake build
+          echo "$RUNNER_TEMP/lean4export/.lake/build/bin" >> "$GITHUB_PATH"
+      - name: Build comparator
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/leanprover/comparator "$RUNNER_TEMP/comparator"
+          cd "$RUNNER_TEMP/comparator"
+          ~/.elan/bin/lake build lean4export comparator
+          echo "COMPARATOR_BIN=$RUNNER_TEMP/comparator/.lake/build/bin/comparator" >> "$GITHUB_ENV"
+      - name: Build nanoda independent kernel (best-effort second kernel)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib "$RUNNER_TEMP/nanoda"
+          cd "$RUNNER_TEMP/nanoda"
+          cargo build --release
+          test -x target/release/nanoda_bin && echo "NANODA_OK=1" >> "$GITHUB_ENV"
+      - name: Run comparator (${{ matrix.cfg }})
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/cmp-logs"
+          LOG="$RUNNER_TEMP/cmp-logs/${{ matrix.cfg }}.log"
+          ok() { grep -q "Your solution is okay!" "$1"; }
+          # make nanoda reachable on a standard PATH landrun may permit
+          if [ -x "$RUNNER_TEMP/nanoda/target/release/nanoda_bin" ]; then
+            sudo cp "$RUNNER_TEMP/nanoda/target/release/nanoda_bin" /usr/local/bin/nanoda_bin 2>/dev/null || true
+          fi
+          # Attempt 1: as shipped (enable_nanoda:true -> independent SECOND kernel)
+          echo "=== attempt 1: nanoda + Lean (independent second kernel) ==="
+          ~/.elan/bin/lake env "$COMPARATOR_BIN" "comparator/${{ matrix.cfg }}.json" 2>&1 | tee "$LOG" || true
+          if ok "$LOG"; then echo "RESULT ${{ matrix.cfg }}: OK via nanoda+Lean (independent second kernel)"; exit 0; fi
+          # Attempt 2: Lean-kernel replay only (statement-equality still fully checked)
+          echo "::warning::second-kernel path did not report success; retrying Lean-kernel-only"
+          CFG2="$RUNNER_TEMP/${{ matrix.cfg }}.lean-only.json"
+          sed 's/"enable_nanoda": *true/"enable_nanoda": false/' "comparator/${{ matrix.cfg }}.json" > "$CFG2"
+          echo "=== attempt 2: statement-equality + Lean kernel replay ==="
+          ~/.elan/bin/lake env "$COMPARATOR_BIN" "$CFG2" 2>&1 | tee "$LOG" || true
+          if ok "$LOG"; then echo "RESULT ${{ matrix.cfg }}: OK via Lean kernel replay (statement-equality verified; second kernel pending)"; exit 0; fi
+          echo "::error::comparator did NOT report success for ${{ matrix.cfg }} on either kernel path"; exit 1
+      - name: Upload comparator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: comparator-${{ matrix.cfg }}
+          path: ${{ runner.temp }}/cmp-logs

@@ -1,0 +1,20 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+SPDX-License-Identifier: CC-BY-4.0
+
+Copyright (c) 2026 Riemann Labs (primaryhosting)
+
+The verification documents, reports, audit, citation metadata, and CI scripts in
+THIS repository are licensed under the Creative Commons Attribution 4.0
+International License. You are free to share and adapt the material for any
+purpose, provided you give appropriate credit, link to the license, and indicate
+if changes were made.
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+NOT COVERED BY THIS LICENSE:
+  * The paper "More Than Two Thirds of the Zeros of the Riemann Zeta Function
+    Lie on the Critical Line" is the work of Claude / Anthropic and is only
+    linked/cited here, not redistributed. See https://www.anthropic.com/research/riemann-zeta
+  * The Lean 4 formalization (anthropics/zeta-23-lean and the primaryhosting fork)
+    is licensed separately under Apache-2.0.
