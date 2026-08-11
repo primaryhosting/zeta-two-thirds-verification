@@ -67,7 +67,10 @@ lake build Solution && lake env lean comparator/PrintAxioms.lean   # axiom audit
 | `docs/independent-replication-report.pdf` | The same, typeset |
 | `AUDIT.md` | From‑scratch statement‑faithfulness + axiom audit |
 | `ci/replicate.yml` | The CI workflow that produced the evidence |
+| `lean/independent-rederivation/` | **Our own** AXLE-verified Lean re-derivation of the §3 linear-algebra core (von Neumann, Sylvester, rank–trace) — downloadable, standalone |
 | `CITATION.cff` / `CITATION.bib` | How to cite this verification |
+
+> **Note on the paper.** Anthropic’s paper is **not redistributed here** — it is marked *do not distribute* and is only linked. What *is* included and downloadable is (a) our verification reports, and (b) our own independent Lean re-derivation of the method’s §3 core in [`lean/independent-rederivation/`](lean/independent-rederivation/) (Aristotle → AXLE, Lean 4.32.0). The full Anthropic formalization is Apache‑2.0 and lives at [`anthropics/zeta-23-lean`](https://github.com/anthropics/zeta-23-lean) / our [fork](https://github.com/primaryhosting/zeta-23-lean).
 
 ## How to cite
 
