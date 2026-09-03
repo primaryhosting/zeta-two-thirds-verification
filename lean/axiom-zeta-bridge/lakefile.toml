@@ -1,0 +1,29 @@
+name = "RiemannLabsZetaBridge"
+version = "0.1.0"
+defaultTargets = ["RiemannLabsZetaBridge"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+
+# The root pins the newer Mathlib snapshot used by AxiomMath/ZetaZeros.
+# Lake resolves the shared transitive Mathlib dependency to this version.
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.0-rc2"
+
+# Main-branch Zeta23 commit carrying the three Lean 4.34 API substitutions.
+[[require]]
+name = "Zeta23"
+git = "https://github.com/primaryhosting/zeta-23-lean"
+rev = "5a2e2393a448f172c2b063ce2bde787de750ec8c"
+
+[[require]]
+name = "ZetaZeros"
+git = "https://github.com/AxiomMath/ZetaZeros"
+rev = "4bcaf70e544506c311d83a5a5b143a134b9fc5f7"
+
+[[lean_lib]]
+name = "RiemannLabsZetaBridge"
+roots = ["RiemannLabsZetaBridge", "RiemannLabs"]
