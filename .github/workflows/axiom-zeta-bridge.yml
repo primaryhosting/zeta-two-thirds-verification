@@ -1,0 +1,38 @@
+name: Axiom Zeta bridge
+
+on:
+  push:
+    branches:
+      - "feat/axiom-zeta-rvm-bridge"
+    paths:
+      - "lean/axiom-zeta-bridge/**"
+      - ".github/workflows/axiom-zeta-bridge.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "lean/axiom-zeta-bridge/**"
+      - ".github/workflows/axiom-zeta-bridge.yml"
+  workflow_dispatch:
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: "lean/axiom-zeta-bridge"
+          build: "true"
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "true"
+      - name: Print theorem axioms
+        working-directory: lean/axiom-zeta-bridge
+        run: lake env lean PrintAxioms.lean
+      - name: Reject unfinished Lean proofs
+        working-directory: lean/axiom-zeta-bridge
+        run: |
+          if grep -R -n -w --include='*.lean' 'sorry' RiemannLabs RiemannLabsZetaBridge.lean PrintAxioms.lean; then
+            echo "Unfinished Lean proof found."
+            exit 1
+          fi
