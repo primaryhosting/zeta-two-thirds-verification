@@ -13,10 +13,11 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.34.0-rc2"
 
+# Lean 4.34 compatibility branch: three pointwise log-derivative rewrites only.
 [[require]]
 name = "Zeta23"
 git = "https://github.com/primaryhosting/zeta-23-lean"
-rev = "3635e74826a4c1fcece7d1cd2b6fa75e43a00510"
+rev = "b7444066a79e7d0eb5840989426bc0a6b2a8120e"
 
 [[require]]
 name = "ZetaZeros"
