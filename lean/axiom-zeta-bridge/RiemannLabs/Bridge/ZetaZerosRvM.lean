@@ -5,7 +5,8 @@ Released under Apache 2.0 license.
 module
 
 public import RiemannLabs.Bridge.Counts
-public import Zeta23.Final
+public import Zeta23.GammaFacts.Complete
+public import Zeta23.RvM.Statement
 public import ZetaZeros.Defs
 
 noncomputable section
@@ -36,6 +37,6 @@ def DyadicToCumulativeRvM : Prop :=
 theorem axiomRiemannVonMangoldt_of_dyadicTransfer
     (hTransfer : DyadicToCumulativeRvM) : ZetaZeros.RiemannVonMangoldt := by
   apply cumulativeRiemannVonMangoldt_iff_axiom.mp
-  exact hTransfer Zeta23.riemannVonMangoldt_zeta
+  exact hTransfer (Zeta23.RvM.riemannVonMangoldt Zeta23.gammaFacts)
 
 end RiemannLabs.Bridge
