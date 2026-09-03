@@ -9,6 +9,9 @@ import RiemannLabsZetaBridge
 #print axioms RiemannLabs.Bridge.scaleWindow_dyadic
 #print axioms RiemannLabs.Bridge.scaleWindow_sub_rvmMain
 #print axioms RiemannLabs.Bridge.dyadicTransfer
+#print axioms RiemannLabs.Bridge.local_rvm_abs_sub_scale
+#print axioms RiemannLabs.Bridge.local_count_ge_scale
+#print axioms RiemannLabs.Bridge.local_scale_ge_count
 #print axioms RiemannLabs.Bridge.cumulativeRiemannVonMangoldt_iff_axiom
 #print axioms RiemannLabs.Bridge.axiomRiemannVonMangoldt_of_dyadicTransfer
 #print axioms RiemannLabs.Bridge.simple_density_6725
