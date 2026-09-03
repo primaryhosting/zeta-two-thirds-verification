@@ -2,10 +2,8 @@
 Copyright (c) 2026 Riemann Labs.
 Released under Apache 2.0 license.
 -/
-module
-
-public import RiemannLabs.Bridge.ZetaZerosRvM
-public import ZetaZeros.Main
+import RiemannLabs.Bridge.ZetaZerosRvM
+import ZetaZeros.Main
 
 noncomputable section
 
