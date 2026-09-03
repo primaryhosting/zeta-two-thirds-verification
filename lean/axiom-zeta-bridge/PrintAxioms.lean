@@ -8,6 +8,7 @@ import RiemannLabsZetaBridge
 #print axioms RiemannLabs.Bridge.cumulativeScale_tendsto_atTop
 #print axioms RiemannLabs.Bridge.scaleWindow_dyadic
 #print axioms RiemannLabs.Bridge.scaleWindow_sub_rvmMain
+#print axioms RiemannLabs.Bridge.dyadicTransfer
 #print axioms RiemannLabs.Bridge.cumulativeRiemannVonMangoldt_iff_axiom
 #print axioms RiemannLabs.Bridge.axiomRiemannVonMangoldt_of_dyadicTransfer
 #print axioms RiemannLabs.Bridge.simple_density_6725
