@@ -47,7 +47,8 @@ theorem cumulative_count_tendsto_atTop
   obtain ⟨T₀, hT₀⟩ := cumulative_count_ge_scale hR (1 / 2) (by norm_num)
   have hbound : ∀ᶠ T : ℝ in atTop,
       (1 / 2 : ℝ) * scaleWindow 0 T ≤ countWindow 0 T :=
-    Filter.eventually_atTop.2 ⟨T₀, by simpa using hT₀⟩
+    Filter.eventually_atTop.2 ⟨T₀, fun T hT => by
+      convert hT₀ T hT using 1 <;> norm_num⟩
   exact tendsto_atTop_mono' _ hbound
     (scaleWindow_zero_tendsto_atTop.const_mul_atTop (by norm_num))
 
@@ -122,7 +123,7 @@ theorem cumulativeRiemannVonMangoldt_of_rvm
     rw [abs_lt]
     constructor
     · linarith
-    · exact hupperDiff.lt_trans h2δslt
+    · exact lt_of_le_of_lt hupperDiff h2δslt
   rw [← scaleWindow_zero_eq hT1]
   change |countWindow 0 T / scaleWindow 0 T - 1| < ε
   have hratio :
