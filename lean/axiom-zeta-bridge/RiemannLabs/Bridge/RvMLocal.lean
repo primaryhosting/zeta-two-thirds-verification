@@ -116,9 +116,11 @@ theorem local_rvm_abs_sub_scale
     calc
       |(Zeta23.Ncount T (2 * T) : ℝ) - scaleWindow T (2 * T)| =
           |((Zeta23.Ncount T (2 * T) : ℝ) - rvmMain T) +
-            (rvmMain T - scaleWindow T (2 * T))| := by ring
+            (rvmMain T - scaleWindow T (2 * T))| := by
+              congr 1
+              ring
       _ ≤ |(Zeta23.Ncount T (2 * T) : ℝ) - rvmMain T| +
-          |rvmMain T - scaleWindow T (2 * T)| := abs_add _ _
+          |rvmMain T - scaleWindow T (2 * T)| := abs_add_le _ _
   calc
     |(Zeta23.Ncount T (2 * T) : ℝ) - scaleWindow T (2 * T)|
         ≤ |(Zeta23.Ncount T (2 * T) : ℝ) - rvmMain T| +
