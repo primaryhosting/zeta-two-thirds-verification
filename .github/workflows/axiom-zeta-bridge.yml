@@ -1,18 +1,16 @@
 name: Axiom Zeta bridge
 
 on:
-  push:
-    branches:
-      - "feat/axiom-zeta-rvm-bridge"
-    paths:
-      - "lean/axiom-zeta-bridge/**"
-      - ".github/workflows/axiom-zeta-bridge.yml"
   pull_request:
     branches: ["main"]
     paths:
       - "lean/axiom-zeta-bridge/**"
       - ".github/workflows/axiom-zeta-bridge.yml"
   workflow_dispatch:
+
+concurrency:
+  group: axiom-zeta-bridge-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-audit:
