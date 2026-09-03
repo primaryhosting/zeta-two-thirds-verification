@@ -2,12 +2,10 @@
 Copyright (c) 2026 Riemann Labs.
 Released under Apache 2.0 license.
 -/
-module
-
-public import RiemannLabs.Bridge.Counts
-public import Zeta23.GammaFacts.Complete
-public import Zeta23.RvM.Statement
-public import ZetaZeros.Defs
+import RiemannLabs.Bridge.Counts
+import Zeta23.GammaFacts.Complete
+import Zeta23.RvM.Statement
+import ZetaZeros.Defs
 
 noncomputable section
 
