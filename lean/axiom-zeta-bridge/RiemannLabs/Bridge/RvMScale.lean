@@ -40,9 +40,10 @@ theorem cumulativeScale_monotone : Monotone cumulativeScale := by
     simp [cumulativeScale, ha, hb]
   · have hb1 : 1 < b := lt_of_not_ge hb
     by_cases ha : a ≤ 1
-    · rw [cumulativeScale]
-      simp only [if_pos ha, if_neg hb]
-      exact mul_nonneg (div_nonneg (by linarith) (by positivity)) (Real.log_nonneg hb1.le)
+    · have hzero : cumulativeScale a = 0 := by
+        simp [cumulativeScale, ha]
+      rw [hzero]
+      exact cumulativeScale_nonneg b
     · have ha1 : 1 < a := lt_of_not_ge ha
       rw [cumulativeScale_of_one_lt ha1, cumulativeScale_of_one_lt hb1]
       have hdiv : a / (2 * Real.pi) ≤ b / (2 * Real.pi) :=
