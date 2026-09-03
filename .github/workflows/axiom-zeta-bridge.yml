@@ -19,13 +19,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
-        with:
-          lake-package-directory: "lean/axiom-zeta-bridge"
-          build: "true"
-          test: "false"
-          lint: "false"
-          use-mathlib-cache: "true"
+      - name: Install elan and the pinned Lean toolchain
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf \
+            https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve pinned dependencies
+        working-directory: lean/axiom-zeta-bridge
+        run: lake update
+      - name: Fetch Mathlib build cache
+        working-directory: lean/axiom-zeta-bridge
+        run: lake exe cache get
+      - name: Build bridge and imported upstream modules
+        working-directory: lean/axiom-zeta-bridge
+        run: lake build
       - name: Print theorem axioms
         working-directory: lean/axiom-zeta-bridge
         run: lake env lean PrintAxioms.lean
