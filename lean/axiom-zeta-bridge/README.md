@@ -61,7 +61,7 @@ axiom boundary inherited from the verified upstream developments.
 
 - Lean: `v4.34.0-rc2`
 - Mathlib: `v4.34.0-rc2`
-- `primaryhosting/zeta-23-lean`: `b7444066a79e7d0eb5840989426bc0a6b2a8120e`
+- `primaryhosting/zeta-23-lean`: `5a2e2393a448f172c2b063ce2bde787de750ec8c`
 - `AxiomMath/ZetaZeros`: `4bcaf70e544506c311d83a5a5b143a134b9fc5f7`
 
 The Zeta23 pin contains only three Mathlib 4.34 API substitutions from `logDeriv_mul` to
