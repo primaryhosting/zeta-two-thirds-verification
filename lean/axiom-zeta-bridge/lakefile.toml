@@ -25,3 +25,4 @@ rev = "4bcaf70e544506c311d83a5a5b143a134b9fc5f7"
 
 [[lean_lib]]
 name = "RiemannLabsZetaBridge"
+roots = ["RiemannLabsZetaBridge", "RiemannLabs"]
