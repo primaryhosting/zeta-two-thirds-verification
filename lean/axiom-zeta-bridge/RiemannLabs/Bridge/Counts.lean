@@ -2,10 +2,8 @@
 Copyright (c) 2026 Riemann Labs.
 Released under Apache 2.0 license.
 -/
-module
-
-public import Zeta23.Statement.SeamClosed
-public import ZetaZeros.Defs
+import Zeta23.Statement.SeamClosed
+import ZetaZeros.Defs
 
 open scoped BigOperators
 open Set
@@ -20,7 +18,7 @@ theorem nontrivialZeros_eq_zerosIn (T : ℝ) :
     ZetaZeros.nontrivialZeros T = Zeta23.zerosIn 0 T := by
   ext ρ
   simp only [ZetaZeros.nontrivialZeros, Zeta23.zerosIn, Zeta23.IsNontrivialZero,
-    Set.mem_setOf_eq]
+    Set.mem_ofPred_eq]
   constructor
   · rintro ⟨hz, hre0, hre1, him0, himT⟩
     exact ⟨⟨hz, hre0, hre1⟩, him0, himT⟩
