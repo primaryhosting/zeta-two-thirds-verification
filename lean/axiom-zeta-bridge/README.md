@@ -41,11 +41,15 @@ The parameter `hTransfer : DyadicToCumulativeRvM` remains visible in every theor
 
 - Lean: `v4.34.0-rc2`
 - Mathlib: `v4.34.0-rc2`
-- `primaryhosting/zeta-23-lean`: `3635e74826a4c1fcece7d1cd2b6fa75e43a00510`
+- `primaryhosting/zeta-23-lean`: `b7444066a79e7d0eb5840989426bc0a6b2a8120e`
+  from branch `compat/lean-4.34`; this changes only three pointwise `logDeriv` rewrite names required
+  by Mathlib's 4.34 function-operation API.
 - `AxiomMath/ZetaZeros`: `4bcaf70e544506c311d83a5a5b143a134b9fc5f7`
 
 The root package deliberately pins the newer Mathlib revision used by `ZetaZeros`; CI therefore also
-acts as the forward-compatibility test for the imported Zeta23 modules.
+acts as the forward-compatibility test for the imported Zeta23 modules. The bridge itself uses
+Lean's legacy import boundary because Zeta23 predates the new `module` declaration while ZetaZeros
+uses it.
 
 ## Build and audit
 
@@ -58,3 +62,4 @@ lake env lean PrintAxioms.lean
 ```
 
 The GitHub workflow fails if the package does not build or if a Lean source file contains `sorry`.
+It caches compiled Zeta23 and ZetaZeros artifacts between iterations and cancels superseded runs.
